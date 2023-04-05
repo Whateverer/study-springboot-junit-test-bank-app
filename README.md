@@ -75,3 +75,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         return source;
     }
 ```
+
+## SecurityConfig Junit 테스트
+스프링 시큐리티에 인증에 대한 예외는 authenticationEntryPoint가 가로챈다.
+이것을 임의로 설정하기 위해서는 SecurityConfig에 다음과 같이 작성한다.
