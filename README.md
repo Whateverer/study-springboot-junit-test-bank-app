@@ -79,3 +79,25 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
 ## SecurityConfig Junit 테스트
 스프링 시큐리티에 인증에 대한 예외는 authenticationEntryPoint가 가로챈다.
 이것을 임의로 설정하기 위해서는 SecurityConfig에 다음과 같이 작성한다.
+```java
+    // Exception 가로채기
+    http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
+        response.setContentType("application/json; charset=utf-8");
+        response.setStatus(403);
+        response.getWriter().println("error"); // 예쁘게 메시지를 포장하는 공통적인 응답 DTO를 만들어보자!!
+    });
+```
+
+## 공통 DTO 만들기
+응답을 처리하는 공통 DTO를 만들자.
+```java
+@RequiredArgsConstructor
+@Getter
+public class ResponseDto<T> {
+    // final 이유 : 응답의 dto는 한번 만들어지면 수정될 이유가 없음.
+    private final Integer code; // 1 성공, -1 실패
+    private final String msg;
+    private final T data;
+}
+```
+

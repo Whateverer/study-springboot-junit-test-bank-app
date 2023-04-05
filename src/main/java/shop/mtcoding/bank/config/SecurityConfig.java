@@ -1,5 +1,6 @@
 package shop.mtcoding.bank.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import shop.mtcoding.bank.ResponseDto;
 import shop.mtcoding.bank.domain.user.UserEnum;
+import shop.mtcoding.bank.util.CustomResponseUtil;
 
 @Configuration // 설정파일로 bean 등록
 public class SecurityConfig {
@@ -44,9 +47,7 @@ public class SecurityConfig {
 
         // Exception 가로채기
         http.exceptionHandling().authenticationEntryPoint((request, response, authException) -> {
-//            response.setContentType("application/json; charset=utf-8");
-            response.setStatus(403);
-            response.getWriter().println("error"); // 예쁘게 메시지를 포장하는 공통적인 응답 DTO를 만들어보자!!
+            CustomResponseUtil.unAuthentication(response, "로그인을 진행해 주세요");
         });
 
         http.authorizeRequests()
