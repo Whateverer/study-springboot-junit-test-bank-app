@@ -33,3 +33,45 @@ public class Account {
 ```
 
 ## Transaction 엔티티 생성
+
+# 스프링부트 시큐리티 세팅
+## SecurityConfig 기본 설정
+     
+1. config class를 만들어 @Configuration 애노테이션을 붙여준다.(@Configuration이 붙어있는 class의 bean만 작동한다.)   
+2. BCryptPasswordEncoder을 빈으로 등록해준다.
+3. SecurityFilterChain을 만들어 http Security 설정을 해준다.
+```java
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        http.headers().frameOptions().disable(); // iframe 허용안함.
+        http.csrf().disable(); // enable이면 post맨 작동 안함 (메타코딩 유튜브에 시큐리티 강의)
+        http.cors().configurationSource(configurationSource()); // 자바스크립트로 요청되는 api는 막겠다.
+
+        // jSessionId를 서버쪽에서 관리 안하겠다는 뜻!
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        // react, 앱으로 요청할 예정
+        http.formLogin().disable();
+        // httpBasic은 브라우저가 팝업창을 이용해서 사용자 인증을 진행한다.
+        http.httpBasic().disable();
+        http.authorizeRequests()
+        .antMatchers("/api/s/**").authenticated()
+        .antMatchers("api/admin/**").hasRole(""+ UserEnum.ADMIN) // 최근 공식문서에서는 ROLE_ 안붙여도 됨
+        .anyRequest().permitAll();
+
+        return http.build();
+        }
+```
+4. CorsConfigurationSource 설정을 해준다.
+```java
+    public CorsConfigurationSource configurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedHeader(("*")); // 모든 header를 받겠다.
+        configuration.addAllowedMethod(("*")); // 모든 method를 받겠다. GET, POST, PUT, DELETE (Javascript 요청 허용)
+        configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용 (프론트엔드 IP만 허용 React)
+        configuration.setAllowCredentials(true); // 클라이언트에서 쿠키 요청 허용
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+```
