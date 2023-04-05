@@ -3,8 +3,8 @@
 
 # 스프링부트 프로젝트 생성
 ## 테이블 생성
-user_tb (유저)
-account_tb (계좌)
+user_tb (유저)    
+account_tb (계좌)     
 transaction_tb (거래내역)
 
 ## User 엔티티 생성
@@ -20,3 +20,6 @@ transaction_tb (거래내역)
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 ```
+
+## Account 엔티티 생성
+항상 ORM에서 fk의 주인은 Many Entity 쪽이다.
