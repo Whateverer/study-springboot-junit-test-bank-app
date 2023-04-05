@@ -41,8 +41,8 @@ public class Account {
 2. BCryptPasswordEncoder을 빈으로 등록해준다.
 3. SecurityFilterChain을 만들어 http Security 설정을 해준다.
 ```java
-@Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         http.headers().frameOptions().disable(); // iframe 허용안함.
         http.csrf().disable(); // enable이면 post맨 작동 안함 (메타코딩 유튜브에 시큐리티 강의)
         http.cors().configurationSource(configurationSource()); // 자바스크립트로 요청되는 api는 막겠다.
