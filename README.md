@@ -31,3 +31,5 @@ public class Account {
     private User user; // user_id    
 }
 ```
+
+## Transaction 엔티티 생성
