@@ -7,3 +7,16 @@ user_tb (유저)
 account_tb (계좌)
 transaction_tb (거래내역)
 
+## User 엔티티 생성
+### Jpa LocalDateTime 자동으로 생성하는 법
+- @EnableJpaAuditing (Main 클래스)
+- @EntityListeners(AuditingEntityListener.class) (Entity 클래스)
+```java
+    @CreatedDate // Insert 시 날짜가 자동으로 들어감
+    @Column(nullable = false)
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate // Insert, Update 시 날짜가 자동으로 들어감
+    @Column(nullable = false)
+    private LocalDateTime updatedAt;
+```
