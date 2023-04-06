@@ -1,4 +1,4 @@
-package shop.mtcoding.bank;
+package shop.mtcoding.bank.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -3,7 +3,7 @@ package shop.mtcoding.bank.util;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import shop.mtcoding.bank.ResponseDto;
+import shop.mtcoding.bank.dto.ResponseDto;
 
 import javax.servlet.http.HttpServletResponse;
 

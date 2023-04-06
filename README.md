@@ -101,3 +101,15 @@ public class ResponseDto<T> {
 }
 ```
 
+# 스프링부트 회원가입 
+## 회원가입 서비스 만들기
+JPA의 QueryMethod 참고하기
+
+예외처리하기 - CustomApiException이 발생하는 순간 아래의 apiException 메소드가 실행된다.
+```java
+    @ExceptionHandler(CustomApiException.class)
+    public ResponseEntity<?> apiException(CustomApiException e) {
+        log.error(e.getMessage());
+        return new ResponseEntity<>(new ResponseDto<>(-1, e.getMessage(), null), HttpStatus.BAD_REQUEST);
+    }
+```
