@@ -164,3 +164,38 @@ public class DummyObject {
     }    
 }
 ```
+
+## 회원가입 컨트롤러 만들기
+Spring에서 파라미터에 RequestBody를 붙이지 않으면 기본 전략은 x-www-form-urlencoded이기 때문에, 우리는 json 형태로 파라미터를 받을거라 @RequestBody를 붙여준다.
+
+유효성검사 - parameter에 @Valid를 붙이고 해당 parameter 클래스에 유효성 검사를 걸어준다. 유효성 검사 실패 시 에러는 BindResult 객체로 받아준다.
+```java
+    @PostMapping("/join")
+    public ResponseEntity<?> join(@RequestBody @Valid JoinReqDto joinReqDto, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            Map<String, String> errorMap = new HashMap<>();
+
+            for (FieldError error : bindingResult.getFieldErrors()) {
+                errorMap.put(error.getField(), error.getDefaultMessage());
+            }
+            return new ResponseEntity<>(new ResponseDto<>(-1, "유효성 검사 실패", errorMap), HttpStatus.BAD_REQUEST);
+        }
+
+        JoinRespDto joinRespDto = userService.회원가입(joinReqDto);
+        return new ResponseEntity<>(new ResponseDto<>(1, "회원가입 성공", joinRespDto), HttpStatus.CREATED);
+    }
+```
+```java
+public static class JoinReqDto {
+    // 유효성 검사
+    @NotEmpty // null이거나, 공백일 수 없다.
+    private String username;
+    @NotEmpty
+    private String password;
+    @NotEmpty
+    private String email;
+    @NotEmpty
+    private String fullname;
+}
+```
