@@ -12,9 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserEnum;
 import shop.mtcoding.bank.domain.user.UserRepository;
+import shop.mtcoding.bank.dto.user.UserReqDto;
+import shop.mtcoding.bank.dto.user.UserRespDto;
 import shop.mtcoding.bank.handler.ex.CustomApiException;
 
 import java.util.Optional;
+
+import static shop.mtcoding.bank.dto.user.UserReqDto.*;
+import static shop.mtcoding.bank.dto.user.UserRespDto.*;
 
 @RequiredArgsConstructor
 @Service
@@ -39,41 +44,5 @@ public class UserService {
 
         // 3. dto 응답
         return new JoinRespDto(userPS);
-    }
-
-    @ToString
-    @Getter
-    @Setter
-    public static class JoinRespDto {
-        private Long id;
-        private String username;
-        private String fullname;
-
-        public JoinRespDto(User user) {
-            this.id = user.getId();
-            this.username = user.getUsername();
-            this.fullname = user.getFullname();
-        }
-    }
-
-    @Getter
-    @Setter
-    public static class JoinReqDto {
-        // 유효성 검사
-        private String username;
-        private String password;
-        private String email;
-        private String fullname;
-
-        // dto 값으로 entity를 바로 만들어낼 수 있다.
-        public User toEntity(BCryptPasswordEncoder passwordEncoder) {
-            return User.builder()
-                    .username(username)
-                    .password(passwordEncoder.encode(password))
-                    .email(email)
-                    .fullname(fullname)
-                    .role(UserEnum.CUSTOMER)
-                    .build();
-        }
     }
 }
