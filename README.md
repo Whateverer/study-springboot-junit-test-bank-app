@@ -137,3 +137,30 @@ class UserServiceTest {
     @Spy // 진짜 passwordEncoder를 가져오는 것
     private BCryptPasswordEncoder passwordEncoder;
 ```
+
+## 회원가입 서비스 코드 리팩토링
+static으로 만들어두었던 JoinReqDto, JoinRespDto를 UserReqDto, UserRespDto를 만들어 각각에 옮겨준다.
+또, test시 마다 User객체를 만들어내는 것이 번거로우니 DummyObject class를 만들어 UserServiceTest에 상속시킨다.
+```java
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest extends DummyObject {
+    User ssar = newMockUser(1L, "ssar", "쌀");
+}
+
+public class DummyObject {
+    protected User newMockUser(Long id, String username, String fullname) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        String encPassword = passwordEncoder.encode("1234");
+        return User.builder()
+                .id(id)
+                .username(username)
+                .password(encPassword)
+                .email(username + "@sdfs.com")
+                .fullname(fullname)
+                .role(UserEnum.CUSTOMER)
+                .createdAt(LocalDateTime.now())
+                .updatedAt(LocalDateTime.now())
+                .build();
+    }    
+}
+```
