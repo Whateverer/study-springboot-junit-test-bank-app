@@ -113,3 +113,27 @@ JPA의 QueryMethod 참고하기
         return new ResponseEntity<>(new ResponseDto<>(-1, e.getMessage(), null), HttpStatus.BAD_REQUEST);
     }
 ```
+
+## 회원가입 서비스 테스트
+#### 테스트 시 Mockito의 MockitoExtension과 함께 테스트 하기.
+```java
+@ExtendWith(MockitoExtension.class)
+class UserServiceTest {
+
+}
+```
+
+#### 가짜 객체를 넣는 애노테이션과 진짜 객체를 넣는 애노테이션
+- @InjectMocks : 가짜 객체 주입
+- @Mock : 가짜 객체 생성
+- @Spy : 진짜 객체 가져오기
+```java
+    @InjectMocks
+    private UserService userService;
+
+    @Mock // 실제로 띄울 필요X, 가짜로 메모리에 띄워서 위의 가짜 userService에 inject해준다.
+    private UserRepository userRepository;
+
+    @Spy // 진짜 passwordEncoder를 가져오는 것
+    private BCryptPasswordEncoder passwordEncoder;
+```
