@@ -199,3 +199,59 @@ public static class JoinReqDto {
     private String fullname;
 }
 ```
+
+## 회원가입 컨트롤러 유효성검사 AOP 적용
+#### AOP : 관점 지향 프로그래밍, **관심사를 분리시킨다**  
+- PointCut : 공통으로 들어갈 메서드의 위치 
+- Advise : 구현할 코드는 무엇인가
+- JoinPoint : PointCut이 위치할 각각의 메서드
+
+get, delete, post(body), put(body) => Body가 있는 post와 put 메서드에 유효성검사 AOP를 적용한다.
+
+1. 먼저 적용할 AOP의 클래스를 만든 후, @Component (Spring에 등록), @Aspect (AOP 사용) 애노테이션을 추가한다.
+```java
+@Component
+@Aspect
+public class CustomValidationAdvice {
+    
+}
+```
+2. Pointcut을 지정해준다. (PostMapping과 PutMapping 애노테이션에 지정)
+```java
+@Component
+@Aspect
+public class CustomValidationAdvice {
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.PostMapping)")
+    public void postMapping() {}
+
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.PutMapping)")
+    public void putMapping() {}
+}
+```
+3. AOP에는 Before, After, Around 세 가지가 있다.
+- Before : 해당 메서드 전에 실행 / After : 해당 메서드 후에 실행
+- Around : joinPoint의 전후 제어 가능
+```java
+    @Around("postMapping() || putMapping()") // postMapping과 putMapping에 AOP적용하겠다. / joinPoint의 전후 제어
+    public Object validationAdvice(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
+        Object[] args = proceedingJoinPoint.getArgs(); // joinPoint의 매개변수
+        for (Object arg : args) {
+            if (arg instanceof BindingResult) {
+                BindingResult bindingResult = (BindingResult) arg;
+
+                if(bindingResult.hasErrors()) {
+                    Map<String, String> errorMap = new HashMap<>();
+
+                    for (FieldError error : bindingResult.getFieldErrors()) {
+                        errorMap.put(error.getField(), error.getDefaultMessage());
+                    }
+                    throw new CustomValidationException("유효성검사 실패", errorMap);
+                }
+            }
+        }
+        return proceedingJoinPoint.proceed(); // 정상적으로 해당 메서드를 실행해라!
+    }
+```
+4. joinPoint 제어 가능한 Around로 postMapping이나 putMapping이 실행될 때 BindingResult에 error가 있다면 유효성검사 Exception을 던져준다.
+
+
