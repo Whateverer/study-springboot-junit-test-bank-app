@@ -400,3 +400,42 @@ SecurityConfig.java 파일에 우리가 만든 필터를 등록해야 한다.
         CustomResponseUtil.unAuthentication(response, "로그인실패");
     }
 ```
+
+## Jwt 인가필터 구현 및 등록완료
+- 접근 시 인가된 회원인지(권한이 있는 회원인지) 검증하기 위해 JwtAuthorizationFilter를 생성한다.
+1. request에서 Authentication 헤더를 가져와서 그 안의 token을 검증
+2. token에 있는 loginUser객체를 이용해 스프링 시큐리티 강제로그인 처리 (SecurityContextHolder.getContext().setAuthentication(authentication))
+3. 그 다음 필터를 타도록 로직 작성
+> JwtAuthorizationFilter.java
+```java
+public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
+        super(authenticationManager);
+    }
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        if(isHeaderVerify(request, response)) {
+            // 토큰이 존재함
+            String token = request.getHeader(JwtVO.HEADER).replace(JwtVO.TOKEN_PREFIX, "");
+            LoginUser loginUser = JwtProcess.verify(token);
+
+            // 임시 세션 (UserDetails 타입 or username) - 강제로그인
+            Authentication authentication = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        }
+        chain.doFilter(request, response);
+    }
+
+    // json 헤더 검증
+    private boolean isHeaderVerify(HttpServletRequest request, HttpServletResponse response) {
+        String header = request.getHeader(JwtVO.HEADER);
+        if(header == null || !header.startsWith(JwtVO.TOKEN_PREFIX)) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+}
+```
