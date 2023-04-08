@@ -301,3 +301,59 @@ public class JwtProcess {
 
 }
 ```
+
+## Jwt 토큰 필터 구현 완료
+1. JwtAuthenticationFilter 생성, UsernamePasswordAuthenticationFilter를 implement한다.
+2. AuthenticationManager를 필드로 생성
+3. AuthenticationManager를 들고있는 생성자 추가
+4. attemptAuthentication() 메서드 override
+5. successfulAuthentication() 메서드 override
+```java
+@Override
+    public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
+            throws AuthenticationException {
+        try {
+            ObjectMapper om = new ObjectMapper(); // request 안에 있는 JWT 토큰을 꺼내기 위해 필요
+            LoginReqDto loginReqDto = om.readValue(request.getInputStream(), LoginReqDto.class);
+
+            // 강제로그인
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                    loginReqDto.getUsername(), loginReqDto.getPassword());
+
+            // UserDetailsService의 loadUserByUsername 호출
+            // JWT를 쓴다 하더라도, 컨트롤러 진입을 하면 시큐리티의 권한체크, 인증체크의 도움을 받을 수 있게 세션을 만든다.
+            // 이 세션의 유효기간은 request하고, response하면 끝!!
+            Authentication authentication = authenticationManager.authenticate(authenticationToken);
+            return authentication;
+        } catch (Exception e) {
+            // authenticationEntryPoint에 걸린다.
+            throw new InternalAuthenticationServiceException(e.getMessage());
+        }
+    }
+
+    // return authentication 잘 작동하면 (로그인 성공 시) successfulAuthentication 메서드 호출된다.
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
+                                            Authentication authResult) throws IOException, ServletException {
+        LoginUser loginUser = (LoginUser) authResult.getPrincipal();
+        String jwtToken = JwtProcess.create(loginUser);
+        response.addHeader(JwtVO.HEADER, jwtToken);
+
+        LoginRespDto loginRespDto = new LoginRespDto(loginUser.getUser());
+        CustomResponseUtil.success(response, loginRespDto);
+    }
+```
+
+로그인 시 UserPasswordAuthenticationToken을 이용해 스프링 시큐리티에 강제 로그인 시킨다.    
+이유 : 스프링 시큐리티를 이용해 컨트롤러 접근의 권한처리를 할 수 있기 때문
+authenticationManager.authenticate(authenticationToken);하면 스프링 시큐리티에 강제로그인된다.
+
+6. 생성자에 setFilterProcessesUrl("/api/login") 메서드로 로그인하려는 url 세팅
+```java
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
+        super(authenticationManager);
+        // UsernamePasswordAuthenticationFilter의 DEFAULT_ANT_PATH_REQUEST_MATCHER를 설정하는 메소드 - 부모(AbstractAuthenticationProcessingFilter의 메소드)
+        setFilterProcessesUrl("/api/login"); 
+        this.authenticationManager = authenticationManager;
+    }
+```
