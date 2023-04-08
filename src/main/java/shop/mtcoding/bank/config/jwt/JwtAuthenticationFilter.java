@@ -1,6 +1,8 @@
 package shop.mtcoding.bank.config.jwt;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -24,6 +26,7 @@ import static shop.mtcoding.bank.dto.user.UserReqDto.*;
 import static shop.mtcoding.bank.dto.user.UserRespDto.*;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private AuthenticationManager authenticationManager;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
@@ -37,6 +40,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
             throws AuthenticationException {
+        log.debug("디버그 : attemptAuthentication() 호출됨");
         try {
             ObjectMapper om = new ObjectMapper(); // request 안에 있는 JWT 토큰을 꺼내기 위해 필요
             LoginReqDto loginReqDto = om.readValue(request.getInputStream(), LoginReqDto.class);
@@ -60,6 +64,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
                                             Authentication authResult) throws IOException, ServletException {
+        log.debug("디버그 : successfulAuthentication() 호출됨");
         LoginUser loginUser = (LoginUser) authResult.getPrincipal();
         String jwtToken = JwtProcess.create(loginUser);
         response.addHeader(JwtVO.HEADER, jwtToken);

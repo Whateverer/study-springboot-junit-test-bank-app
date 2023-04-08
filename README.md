@@ -357,3 +357,33 @@ authenticationManager.authenticate(authenticationToken);하면 스프링 시큐�
         this.authenticationManager = authenticationManager;
     }
 ```
+
+## Jwt 필터 등록하기
+SecurityConfig.java 파일에 우리가 만든 필터를 등록해야 한다.
+- SecurityConfig에 CustomSecurityFilterManager라는 inner class 생성
+- AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity>를 상속받는다. (제네릭은 해당 클래스명, HttpSecurity)
+- 생성 후 SecurityFilterChain에 필터 등록
+
+> SecurityConfig.java
+```java
+ 
+    // JWT 필터 등록이 필요함
+    public class CustomSecurityFilterManager extends AbstractHttpConfigurer<CustomSecurityFilterManager, HttpSecurity> {
+        @Override
+        public void configure(HttpSecurity builder) throws Exception {
+            AuthenticationManager authenticationManager =  builder.getSharedObject(AuthenticationManager.class);
+            // 여기에 필터 등록
+            builder.addFilter(new JwtAuthenticationFilter(authenticationManager)); // 강제 세션로그인을 위해 AuthenticaitonManager가 필요
+            super.configure(builder);
+        }
+    }
+```
+
+```java
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+        // 필터 적용
+        http.apply(new CustomSecurityFilterManager());    
+        // ... 예외적용 코드
+    }
+```
