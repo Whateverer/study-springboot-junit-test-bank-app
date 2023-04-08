@@ -387,3 +387,16 @@ SecurityConfig.java 파일에 우리가 만든 필터를 등록해야 한다.
         // ... 예외적용 코드
     }
 ```
+
+## Jwt 토큰 로그인 실패 로직 처리
+- 아래 로직 추가
+- 로그인 실패 시 unsuccessfulAuthentication() 메서드 호출되고 해당 메서드에 로그인 실패 시의 로직을 작성
+> JwtAuthenticationFitler
+```java
+    // 로그인 실패
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
+        CustomResponseUtil.unAuthentication(response, "로그인실패");
+    }
+```
