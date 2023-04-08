@@ -254,4 +254,50 @@ public class CustomValidationAdvice {
 ```
 4. joinPoint 제어 가능한 Around로 postMapping이나 putMapping이 실행될 때 BindingResult에 error가 있다면 유효성검사 Exception을 던져준다.
 
+# 스프링부트 JWT 인증과 인가
+## Jwt 토큰 생성을 위한 세팅
+username과 password를 json으로 서버에 전달   
+HS256이면 대칭키로 서버에서만 키를 들고있으면 된다.
 
+스프링 시큐리티 적용한 로그인
+1. LoginUser 생성 (UserDetails를 implement 후 사용에 맞게 수정)
+2. LoginService 생성 (UserDetailsService를 implement) 후, loadUserByUsername(username) 메서드를 override
+3. loadUserByUsername(username)의 리턴값은 LoginUser로 세팅
+
+JWT 토큰 프로세스 로직
+1. JwtVO (interface) 생성
+```java
+public interface JwtVO {
+    public static final String SECRET = "메타코딩"; // HS256
+    public static final int EXPIRATION_TIME = 1000 * 60 * 60 *24 * 7; // 일주일
+    public static final String TOKEN_PREFIX = "Bearer ";
+    public static final String HEADER = "Authorization";
+}
+```
+2. JwtProcess.java 생성 - 토큰을 생성하고 검증하는 로직
+```java
+public class JwtProcess {
+    private final Logger log = LoggerFactory.getLogger(getClass());
+    // 토큰 생성
+    public static String create(LoginUser loginUser) {
+        String jwtToken = JWT.create()
+                .withSubject("bank")
+                .withExpiresAt(new Date(System.currentTimeMillis() + JwtVO.EXPIRATION_TIME))
+                .withClaim("id", loginUser.getUsername())
+                .withClaim("role", loginUser.getUser().getRole() + "")
+                .sign(Algorithm.HMAC512(JwtVO.SECRET));
+        return JwtVO.TOKEN_PREFIX+jwtToken;
+    }
+
+    // 토큰 검증 (return 되는 LoginUser 객체를 강제로 시큐리티 세션에 직접 주입할 예정)
+    public static LoginUser verify(String token) {
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC512(JwtVO.SECRET)).build().verify(token);
+        Long id = decodedJWT.getClaim("id").asLong();
+        String role = decodedJWT.getClaim("role").asString();
+        User user = User.builder().id(id).role(UserEnum.valueOf(role)).build();
+        LoginUser loginUser = new LoginUser(user);
+        return loginUser;
+    }
+
+}
+```
