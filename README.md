@@ -441,3 +441,23 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 ```
 
 ## 시큐리티 JWT 코드 리뷰 및 개념잡기
+시큐리티 필터 2개 - UsernamePasswordAuthenticationFilter(인증, JwtAuthenticationFilter) / BasicAuthenticationFilter(인가, JwtAuthorizationFilter)
+
+- 인증 필터 
+1. /api/login으로 요청을 하면 가로채서 username, password를 받아서 인증 처리
+2. 파싱 -> LoginReqDto
+3. 토큰 -> 인증
+4. userPS 호출 -> DB 확인
+5. 없으면 unsuccessfulAuthentication() 
+6. 있으면 successfulAuthentication()
+7. 시큐리티 전용 세션(SecurityContextHolder)에 담김
+8. JWT 토큰을 생성해서 response 헤더에 담기
+> SecurityConfig.java
+```java
+// jSessionId를 서버쪽에서 관리 안하겠다는 뜻!
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+```
+
+- 인가 필터
+1. 인증됨
+2. 권한 부여
