@@ -439,3 +439,5 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     }
 }
 ```
+
+## 시큐리티 JWT 코드 리뷰 및 개념잡기

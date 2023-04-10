@@ -26,7 +26,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         if(isHeaderVerify(request, response)) {
             // 토큰이 존재함
             String token = request.getHeader(JwtVO.HEADER).replace(JwtVO.TOKEN_PREFIX, "");
-            LoginUser loginUser = JwtProcess.verify(token);
+            LoginUser loginUser = JwtProcess.verify(token); // id, role만 있음!!
 
             // 임시 세션 (UserDetails 타입 or username) - 강제로그인
             Authentication authentication = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
