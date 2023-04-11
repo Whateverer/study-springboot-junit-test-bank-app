@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static shop.mtcoding.bank.dto.user.UserReqDto.*;
 
 @Transactional
-@ActiveProfiles
+@ActiveProfiles("test")
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 class JwtAuthenticationFilterTest extends DummyObject {
