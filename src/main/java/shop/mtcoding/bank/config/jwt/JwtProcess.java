@@ -18,7 +18,7 @@ public class JwtProcess {
         String jwtToken = JWT.create()
                 .withSubject("bank")
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtVO.EXPIRATION_TIME))
-                .withClaim("id", loginUser.getUsername())
+                .withClaim("id", loginUser.getUser().getId())
                 .withClaim("role", loginUser.getUser().getRole() + "")
                 .sign(Algorithm.HMAC512(JwtVO.SECRET));
         return JwtVO.TOKEN_PREFIX+jwtToken;
