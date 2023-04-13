@@ -467,3 +467,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 ```java
 .antMatchers("/api/admin/**").hasRole(""+ UserEnum.ADMIN);
 ```
+
+# Bank 애플리케이션
+## 계좌등록 서비스 만들기
+- @Digits(integer = 4, fraction = 20) 숫자의 자릿수 제한 (문자열은 @Size 사용)
