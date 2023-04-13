@@ -30,3 +30,4 @@ spring:
 logging:
   level:
     shop.mtcoding.bank : debug
+    org.hibernate.type: trace

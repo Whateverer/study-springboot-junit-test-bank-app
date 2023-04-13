@@ -471,3 +471,16 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 # Bank 애플리케이션
 ## 계좌등록 서비스 만들기
 - @Digits(integer = 4, fraction = 20) 숫자의 자릿수 제한 (문자열은 @Size 사용)
+
+## 계좌등록 컨트롤러 만들기
+- 런타임 시에 회원가입 상태를 항상 유지시키려면 CommandLineRunner를 사용 (서버 실행 시 무조건 실행됨) 
+```java
+    @Profile("dev") // prod 모드에서는 실행되면 안된다.
+    @Bean
+    CommandLineRunner init(UserRepository userRepository) {
+        return (args) -> {
+            // 서버 실행시에 무조건 실행된다.
+            User ssar = userRepository.save(newUser("ssar", "쌀"));
+        };
+    }
+```
