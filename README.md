@@ -461,3 +461,9 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 - 인가 필터
 1. 인증됨
 2. 권한 부여
+
+## SecurityConfig에 ROLE_ prefix 관련 공식 문서 변경 확인하기
+- 최근 공식문서에서는 ROLE_ 안붙여도 됨
+```java
+.antMatchers("/api/admin/**").hasRole(""+ UserEnum.ADMIN);
+```
