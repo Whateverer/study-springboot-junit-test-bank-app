@@ -10,12 +10,12 @@ import shop.mtcoding.bank.domain.account.AccountRepository;
 import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.account.AccountReqDto;
-import shop.mtcoding.bank.dto.account.AccountRespDto;
 import shop.mtcoding.bank.handler.ex.CustomApiException;
 
-import javax.validation.constraints.Digits;
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static shop.mtcoding.bank.dto.account.AccountRespDto.*;
 
@@ -26,6 +26,46 @@ public class AccountService {
 
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
+
+    public AccountListRespDto 계좌목록보기_유저별(Long userId) {
+        User userPS = userRepository.findById(userId).orElseThrow(
+                () -> new CustomApiException("유저를 찾을 수 없습니다.")
+        );
+
+        // 유저의 모든 계좌목록
+        List<Account> accountListPS = accountRepository.findByUser_id(userId);
+        return new AccountListRespDto(userPS, accountListPS);
+    }
+
+    @Getter
+    @Setter
+    public static class AccountListRespDto {
+        private String fullname;
+        private List<AccountDto> accounts = new ArrayList<>();
+
+        public AccountListRespDto(User user, List<Account> accounts) {
+            this.fullname = user.getFullname();
+//            this.accounts = accounts.stream().map((account) -> new AccountDto(account)).collect(Collectors.toList());
+            this.accounts = accounts.stream().map((AccountDto::new)).collect(Collectors.toList());
+            // [account, account]
+        }
+
+        @Getter
+        @Setter
+        public class AccountDto {
+            private Long id;
+            private Long password;
+            private Long balance;
+
+            // Entity 객체를 Dto로 옮기는 작업
+            // 이유 : Entity를 Controller로 넘기면 json이 모든 필드에 대한 getter를 생성, lazy loading이 생길 수 있어서
+            public AccountDto(Account account) {
+                this.id = account.getId();
+                this.password = account.getPassword();
+                this.balance = account.getBalance();
+            }
+        }
+    }
 
     @Transactional
     public AccountSaveRespDto 계좌등록(AccountReqDto.AccountSaveReqDto accountSaveReqDto, Long userId) {
