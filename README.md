@@ -512,3 +512,36 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 - @InjectMocks - 모든 Mock들이 InjectMocks로 주입됨
 - @Mock // Mock 애노테이션 붙여진 것들이 @InjectMocks쪽으로 주입된다.
 - @Spy // 진짜 객체를 InjectMocks에 주입한다.
+
+## 계좌등록 컨트롤러 테스트
+> AccountControllerTest.java
+```java
+    @BeforeEach
+    public void setUp() {
+        User ssar = userRepository.save(newUser("ssar", "쌀"));
+    }
+    
+    // jwt token -> 인증필터 -> 시큐리티 세션생성
+    // setupBefore=TEST_METHOD (setUp메서드 실행 전에 수행)
+    // setupBefore = TestExecutionEvent.TEST_EXECUTION (saveAccount_test() 메서드 실행전에 수행)
+    @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION) // ssar로 시큐리티 강제 로그인 // DB에서 username=ssar 조회를 해서 세션에 담아주는 어노테이션!!
+    @Test
+    void saveAccount_test() throws Exception {
+        // given
+        AccountSaveReqDto accountSaveReqDto = new AccountSaveReqDto();
+        accountSaveReqDto.setNumber(9999L);
+        accountSaveReqDto.setPassword(1234L);
+        String requestBody = om.writeValueAsString(accountSaveReqDto);
+        System.out.println("테스트: " + requestBody);
+
+        // when
+        ResultActions resultActions = mvc.perform(post("/api/s/account").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+        
+        // then
+        resultActions.andExpect(status().isCreated());
+    }
+
+```
+- @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION) : DB에서 "ssar"이라는 이름의 user를 조회해서 로그인처리, setupBefore = TestExecutionEvent.TEST_EXECUTION 설정 시 해당 애노테이션이 붙어있는 메서드가 실행하기 바로 전에 로그인 처리됨.
