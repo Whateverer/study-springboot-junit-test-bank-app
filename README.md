@@ -484,3 +484,31 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
         };
     }
 ```
+
+## 계좌등록 서비스 테스트
+> AccountService.java
+```java
+    @Transactional
+    public AccountSaveRespDto 계좌등록(AccountReqDto.AccountSaveReqDto accountSaveReqDto, Long userId) {
+        // User가 DB에 있는지 검증
+        User userPS = userRepository.findById(userId).orElseThrow(
+                () -> new CustomApiException("유저를 찾을 수 없습니다.")
+        );
+
+        // 해당 계좌가 DB에 있는 중복여부를 체크
+        Optional<Account> accountOP = accountRepository.findByNumber(accountSaveReqDto.getNumber());
+        if (accountOP.isPresent()) {
+            throw new CustomApiException("해당 계좌가 이미 존재합니다.");
+        }
+
+        // 계좌 등록
+        Account accountPS = accountRepository.save(accountSaveReqDto.toEntity(userPS));
+
+        // DTO를 응답
+        return new AccountSaveRespDto(accountPS);
+    }
+```
+- AccountRepository를 총 3번 쓴다 => 3개의 stub을 만들어준다.
+- @InjectMocks - 모든 Mock들이 InjectMocks로 주입됨
+- @Mock // Mock 애노테이션 붙여진 것들이 @InjectMocks쪽으로 주입된다.
+- @Spy // 진짜 객체를 InjectMocks에 주입한다.
