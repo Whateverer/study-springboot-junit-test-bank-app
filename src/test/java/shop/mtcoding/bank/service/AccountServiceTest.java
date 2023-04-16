@@ -15,6 +15,7 @@ import shop.mtcoding.bank.domain.user.User;
 import shop.mtcoding.bank.domain.user.UserRepository;
 import shop.mtcoding.bank.dto.account.AccountReqDto;
 import shop.mtcoding.bank.dto.account.AccountRespDto;
+import shop.mtcoding.bank.handler.ex.CustomApiException;
 
 import java.util.Optional;
 
@@ -68,5 +69,32 @@ class AccountServiceTest extends DummyObject {
 
         // then
         assertThat(accountSaveRespDto.getNumber()).isEqualTo(1111L);
+    }
+
+    @Test
+    void 계좌목록보기_test() {
+        // given
+
+        // when
+
+        // then
+    }
+
+    @Test
+    void 계좌삭제_test() {
+        // given
+        Long number = 1111L;
+        Long userId = 2L;
+
+        // stub
+        User ssar = newMockUser(1L, "ssar", "쌀");
+        Account ssarAccount = newMockAccount(1L, 1111L, 1000L, ssar);
+        when(accountRepository.findByNumber(any())).thenReturn(Optional.of(ssarAccount));
+
+        // when
+//        accountService.계좌삭제(number, userId);
+
+        // then
+        assertThrows(CustomApiException.class, () -> accountService.계좌삭제(number, userId));
     }
 }

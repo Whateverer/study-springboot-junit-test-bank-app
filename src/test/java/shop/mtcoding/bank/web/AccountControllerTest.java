@@ -63,7 +63,6 @@ class AccountControllerTest extends DummyObject {
         resultActions.andExpect(status().isCreated());
     }
 
-
     /*@Test
     void saveAccount_test() {
         // given

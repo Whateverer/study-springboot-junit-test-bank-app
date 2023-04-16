@@ -41,4 +41,10 @@ public class AccountController {
         AccountListRespDto accountRespDto = accountService.계좌목록보기_유저별(loginUser.getUser().getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "", null), HttpStatus.OK);
     }
+
+    @DeleteMapping("/s/account/{number}")
+    public ResponseEntity<?> deleteAccount(@PathVariable Long number, @AuthenticationPrincipal LoginUser loginUser) {
+        accountService.계좌삭제(number, loginUser.getUser().getId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "계좌 삭제 완료", null), HttpStatus.OK);
+    }
 }
