@@ -545,3 +545,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
 ```
 - @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION) : DB에서 "ssar"이라는 이름의 user를 조회해서 로그인처리, setupBefore = TestExecutionEvent.TEST_EXECUTION 설정 시 해당 애노테이션이 붙어있는 메서드가 실행하기 바로 전에 로그인 처리됨.
+
+## 계좌삭제 컨트롤러 생성 및 테스트 
+Lazy Loading 시 persistence 객체에 해당 객체가 있으면 쿼리가 날아가지 않는다.
+JPQL을 사용하면 join을 이용해서 Lazy Loading이 아니라 미리 필요한 정보를 가져올 수 있다.
+```java
+@Query("SELECT ac FROM Account ac JOIN FETCH ac.user u WHERE ac.number = :number")
+```
