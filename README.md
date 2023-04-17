@@ -552,3 +552,15 @@ JPQL을 사용하면 join을 이용해서 Lazy Loading이 아니라 미리 필�
 ```java
 @Query("SELECT ac FROM Account ac JOIN FETCH ac.user u WHERE ac.number = :number")
 ```
+
+## @Sql teardown.sql 적용하기
+- @Transactional을 사용하면 기본키 autoincrease가 실행되어 기본키 값을 예측할 수 없게 된다. 그래서 대신 @Sql 애노테이션을 이용해 설정해준다. 
+- @Sql("classpath:db/teardown.sql")
+- sql파일 생성
+```sql
+SET REFERENTIAL_INTEGRITY FALSE;
+truncate table transaction_tb;
+truncate table account_tb;
+truncate table user_tb;
+SET REFERENTIAL_INTEGRITY TRUE;
+```
