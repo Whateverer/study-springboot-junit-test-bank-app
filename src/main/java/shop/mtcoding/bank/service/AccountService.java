@@ -21,10 +21,8 @@ import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static shop.mtcoding.bank.dto.account.AccountRespDto.*;
 
@@ -83,7 +81,7 @@ public class AccountService {
 
     // 인증이 필요 없다.
     @Transactional
-    public void 계좌입금(AccountDepositReqDto accountDepositReqDto) { // ATM -> 누군가의 계좌
+    public AccountDepositRespDto 계좌입금(AccountDepositReqDto accountDepositReqDto) { // ATM -> 누군가의 계좌
         // 0원 체크 
         if(accountDepositReqDto.getAmount() <= 0L) {
             throw new CustomApiException("0원 이하의 금액을 입금할 수 없습니다.");
