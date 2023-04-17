@@ -9,14 +9,20 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 class JwtProcessTest {
-    @Test
-    public void create_test() {
+
+    private String createToken() {
         // given
         User user = User.builder().id(1L).role(UserEnum.CUSTOMER).build();
         LoginUser loginUser = new LoginUser(user);
 
         // when
-        String jwtToken = JwtProcess.create(loginUser);
+        return JwtProcess.create(loginUser);
+    }
+    @Test
+    public void create_test() {
+        // given
+        // when
+        String jwtToken = createToken();
         System.out.println("테스트 : " + jwtToken);
 
         // then
@@ -25,7 +31,8 @@ class JwtProcessTest {
     @Test
     public void verify_test() {
         // given
-        String jwtToken = "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiYW5rIiwiZXhwIjoxNjgxNzkwOTQ3LCJpZCI6MSwicm9sZSI6IkNVU1RPTUVSIn0.CiGc14JIHSdBEEjYLHeBXoM_zsBr-89MlnGC6QgF5n24DpkP_2wnz7xg9WHj-R8NYdc7DCW20c3LIuKZ-2vmng";
+        String token = createToken(); // Bearer 제거해서 처리하기
+        String jwtToken = token.replace(JwtVO.TOKEN_PREFIX, "");
 
         // when
         LoginUser loginUser = JwtProcess.verify(jwtToken);
