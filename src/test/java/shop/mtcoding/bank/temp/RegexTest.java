@@ -68,5 +68,31 @@ public class RegexTest {
         boolean result = Pattern.matches("^[a-zA-Z0-9]{2,6}@[a-zA-Z0-9]{2,6}\\.[a-zA-Z]{2,3}$", email);
         System.out.println("테스트 : " + result);
     }
+    @Test
+    public void account_gubun_test1() {
+        String gubun = "DEPOSIT";
+        boolean result = Pattern.matches("^(DEPOSIT)$", gubun); // 정확하게 "그" 문자열일 때 괄호써준다.
+        System.out.println("테스트 : " + result);
+    }
+    @Test
+    public void account_gubun_test2() {
+        String gubun = "TRANSFER";
+        boolean result = Pattern.matches("^(DEPOSIT|TRANSFER)$", gubun); // 정확하게 "그" 문자열일 때 괄호써준다.
+        System.out.println("테스트 : " + result);
+    }
+    @Test
+    public void account_tel_test1() {
+        String tel = "010-2223-8292";
+        boolean result = Pattern.matches("^[0-9]{3}-[0-9]{4}-[0-9]{4}$", tel);
+        System.out.println("테스트 : " + result);
+    }
+
+    @Test
+    public void account_tel_test2() {
+        String tel = "01022238292";
+        boolean result = Pattern.matches("^[0-9]{11}$", tel);
+        System.out.println("테스트 : " + result);
+    }
+
 
 }

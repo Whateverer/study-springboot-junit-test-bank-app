@@ -564,3 +564,6 @@ truncate table account_tb;
 truncate table user_tb;
 SET REFERENTIAL_INTEGRITY TRUE;
 ```
+## 계좌입금 서비스 만들기
+- Controller 단에 Entity를 노출하면 안된다.
+- 순환참조 오류가 발생할 수 있기 때문 -> Entity를 Dto로 변환해서 Response객체에 담아준다.

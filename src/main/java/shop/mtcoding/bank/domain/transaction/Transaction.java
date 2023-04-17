@@ -19,16 +19,16 @@ import java.time.LocalDateTime;
 public class Transaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     private Account withdrawAccount;
     @ManyToOne(fetch = FetchType.LAZY)
 
     private Account depositAccount;
     @Column(nullable = false)
-    private long amount;
-    private long withdrawAccountBalance; // 1111 계좌 -> 1000원 -> 500원 -> 200원 (transaction 마다의 잔액을 확인)
-    private long depositAccountBalance;
+    private Long amount;
+    private Long withdrawAccountBalance; // 1111 계좌 -> 1000원 -> 500원 -> 200원 (transaction 마다의 잔액을 확인)
+    private Long depositAccountBalance;
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private TransactionEnum gubun; // WITHDRAW, DEPOSIT, TRANSFER, ALL
@@ -46,7 +46,7 @@ public class Transaction {
     private LocalDateTime updatedAt;
 
     @Builder
-    public Transaction(long id, Account withdrawAccount, Account depositAccount, long amount, long withdrawAccountBalance, long depositAccountBalance, TransactionEnum gubun, String sender, String receiver, String tel, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public Transaction(Long id, Account withdrawAccount, Account depositAccount, Long amount, Long withdrawAccountBalance, Long depositAccountBalance, TransactionEnum gubun, String sender, String receiver, String tel, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.id = id;
         this.withdrawAccount = withdrawAccount;
         this.depositAccount = depositAccount;
