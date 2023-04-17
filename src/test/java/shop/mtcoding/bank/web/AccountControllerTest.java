@@ -87,7 +87,7 @@ class AccountControllerTest extends DummyObject {
      * Lazy 로딩은 쿼리도 발생 안함 - PC에 있다면!!
      * Lazy 로딩할 때 PC 없다면 쿼리가 발생함
      */
-    @WithUserDetails(value = "cos", setupBefore = TestExecutionEvent.TEST_EXECUTION)
+    @WithUserDetails(value = "ssar", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     @Test
     void deleteAccount_test() throws Exception {
         // given
