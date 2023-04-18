@@ -108,38 +108,32 @@ class AccountServiceTest extends DummyObject {
         assertThrows(CustomApiException.class, () -> accountService.계좌삭제(number, userId));
     }
 
+    // Account -> balance 변경됐는지
+    // Transaction -> balance 잘 기록됐는지
     @Test
     void 계좌입금_test() {
         // given
         AccountDepositReqDto accountDepositReqDto = new AccountDepositReqDto();
         accountDepositReqDto.setAmount(100L);
         accountDepositReqDto.setNumber(1111L);
-        accountDepositReqDto.setGubun(TransactionEnum.DEPOSIT.getValue());
+        accountDepositReqDto.setGubun("DEPOSIT");
+        accountDepositReqDto.setTel("01088887777");
 
         // stub 1
-        Account account = newMockAccount(1L, 1111L, 1000L, newMockUser(1L, "ssar", "쌀"));
-        when(accountRepository.findByNumber(any())).thenReturn(Optional.of(account));
+        User ssar = newMockUser(1L, "ssar", "쌀"); // 실행됨
+        Account ssarAccount1 = newMockAccount(1L, 1111L, 1000L, ssar); // 실행됨 - ssarAccount1 -> 1000원
+        when(accountRepository.findByNumber(any())).thenReturn(Optional.of(ssarAccount1)); // 실행안됨 -> service 호출 뒤 실행됨
 
-        account.deposit(accountDepositReqDto.getAmount());
+        // stub 2 (스텁이 진행될 때 마다 연관된 객체는 새로 만들어서 주입하기 - 타이밍 때문에 꼬인다.)
+        Account ssarAccount2 = newMockAccount(1L, 1111L, 1000L, ssar);
+        Transaction transaction = newMockDepositTransaction(1L, ssarAccount2); // 실행됨 (ssarAccount1 -> 1100원)
+        when(transactionRepository.save(any())).thenReturn(transaction); // 실행안됨
 
-        // stub 2
-        Transaction transaction = Transaction.builder()
-                .depositAccount(account)
-                .withdrawAccount(null)
-                .depositAccountBalance(account.getBalance())
-                .withdrawAccountBalance(null)
-                .amount(accountDepositReqDto.getAmount())
-                .gubun(TransactionEnum.DEPOSIT)
-                .sender("ATM")
-                .receiver(accountDepositReqDto.getNumber()+"")
-                .tel(accountDepositReqDto.getTel())
-                .createdAt(LocalDateTime.now())
-                .build();
-        when(transactionRepository.save(any())).thenReturn(transaction);
         // when
         AccountDepositRespDto accountDepositRespDto = accountService.계좌입금(accountDepositReqDto);
 
         // then
+        assertThat(ssarAccount1.getBalance()).isEqualTo(1100L);
         assertThat(accountDepositRespDto.getTransaction().getDepositAccountBalance()).isEqualTo(1100L);
     }
 }
