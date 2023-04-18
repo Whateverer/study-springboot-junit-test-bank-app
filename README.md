@@ -567,3 +567,8 @@ SET REFERENTIAL_INTEGRITY TRUE;
 ## 계좌입금 서비스 만들기
 - Controller 단에 Entity를 노출하면 안된다.
 - 순환참조 오류가 발생할 수 있기 때문 -> Entity를 Dto로 변환해서 Response객체에 담아준다.
+
+## 서비스 테스트에 관하여 생각해보기
+- 정석으로 테스트를 짜려면 stub객체를 만들어서 전체 로직에 대한 테스트를 만들어야 하지만, 너무 번거롭고 많은 코드를 작성해야 한다.
+- service layer 테스트는 AccountServiceTest.java에 나온 유형이 거의 전부이다.
+- 데이터베이스에 대한(JPA) 테스트가 많으면 굳이 stub을 만들어 가면서까지 짤 필요가 있는지 다시 한번 생각해봐야 한다.(JPA가 직접 DB에 접근하기 때문에 JPA에 대한 테스트는 따로 필요하지 않음.)
