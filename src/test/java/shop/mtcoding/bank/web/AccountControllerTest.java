@@ -104,6 +104,24 @@ class AccountControllerTest extends DummyObject {
         ));
     }
 
+    @Test
+    void depositAccount_test() throws Exception {
+        // given
+        AccountDepositReqDto accountDepositReqDto = new AccountDepositReqDto();
+        accountDepositReqDto.setAmount(100L);
+        accountDepositReqDto.setNumber(1111L);
+        accountDepositReqDto.setGubun("DEPOSIT");
+        accountDepositReqDto.setTel("01088887777");
+        String requestBody = om.writeValueAsString(accountDepositReqDto);
+
+        // when
+        ResultActions resultActions = mvc.perform(post("/api/account/deposit").content(requestBody).contentType(MediaType.APPLICATION_JSON));
+        String responseBody = resultActions.andReturn().getResponse().getContentAsString();
+        System.out.println("테스트 : " + responseBody);
+
+        // then
+        resultActions.andExpect(status().isCreated());
+    }
     /*@Test
     void saveAccount_test() {
         // given
