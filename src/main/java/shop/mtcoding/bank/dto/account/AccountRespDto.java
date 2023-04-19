@@ -47,6 +47,7 @@ public class AccountRespDto {
                 this.sender = transaction.getSender();
                 this.receiver = transaction.getReceiver();
                 this.amount = transaction.getAmount();
+                this.depositAccountBalance = transaction.getDepositAccountBalance();
                 this.createAt = CustomDateUtil.toStringFormat(transaction.getCreatedAt());
             }
         }

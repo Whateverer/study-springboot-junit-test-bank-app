@@ -59,7 +59,7 @@ public class Account {
     }
 
     public void deposit(Long amount) {
-        balance += amount;
+        this.balance += amount;
     }
 
     public void checkSamePassword(Long password) {
@@ -76,6 +76,6 @@ public class Account {
 
     public void withdraw(Long amount) {
         checkBalance(amount);
-        balance -= amount;
+        this.balance -= amount;
     }
 }

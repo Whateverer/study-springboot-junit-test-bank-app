@@ -60,4 +60,11 @@ public class AccountController {
         AccountWithdrawRespDto accountDepositReqDto = accountService.계좌출금(accountWithdrawReqDto, loginUser.getUser().getId());
         return new ResponseEntity<>(new ResponseDto<>(1, "계좌 출금 완료", accountDepositReqDto), HttpStatus.CREATED);
     }
+
+    @PostMapping("/s/account/transfer")
+    public ResponseEntity<?> transferAccount(@RequestBody @Valid AccountTransferReqDto accountTransferReqDto,
+                                             BindingResult bindingResult, @AuthenticationPrincipal LoginUser loginUser) {
+        AccountTransferRespDto accountTransferRespDto = accountService.계좌이체(accountTransferReqDto, loginUser.getUser().getId());
+        return new ResponseEntity<>(new ResponseDto<>(1, "계좌 이체 완료", accountTransferRespDto), HttpStatus.CREATED);
+    }
 }

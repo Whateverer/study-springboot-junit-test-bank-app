@@ -164,7 +164,7 @@ public class AccountService {
                 );
 
         // 입금계좌 확인
-        Account depositAccountPS = accountRepository.findByNumber(accountTransferReqDto.getWithdrawNumber())
+        Account depositAccountPS = accountRepository.findByNumber(accountTransferReqDto.getDepositNumber())
                 .orElseThrow(
                         () -> new CustomApiException("입금계좌를 찾을 수 없습니다.")
                 );
