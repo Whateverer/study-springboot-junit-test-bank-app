@@ -576,3 +576,22 @@ SET REFERENTIAL_INTEGRITY TRUE;
 ## 계좌출금 서비스 만들기
 - 계좌입금 Response Dto와 계좌출금 Response Dto가 거의 비슷한데 같은 것을 공유하면 안되는지?
 - 안된다. 나중에 수정될 여지가 있기 때문에 완전히 같더라도 독립적으로 Dto를 생성해준다.
+
+## cors 테스트
+> SecurityConfig.java
+```java
+    public CorsConfigurationSource configurationSource() {
+        log.debug("디버그 : configurationSource cors 설정이 SecurityFilterChain에 등록됨");
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedHeader(("*")); // 모든 header를 받겠다.
+        configuration.addAllowedMethod(("*")); // 모든 method를 받겠다. GET, POST, PUT, DELETE (Javascript 요청 허용)
+        configuration.addAllowedOriginPattern("*"); // 모든 IP 주소 허용 (프론트엔드 IP만 허용 React)
+        configuration.setAllowCredentials(true); // 클라이언트에서 쿠키 요청 허용
+        configuration.addExposedHeader("Authorization"); // 브라우저가 javascript에서 접근 가능하게 함, 옛날에는 default값이었음
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+```
+- configuration에 addExposedHeader("Authorization"); 해당 코드를 넣어줘야 브라우저가 javascript에서 Authorization header 값을 사용할 수 있도록 노출시켜준다.
