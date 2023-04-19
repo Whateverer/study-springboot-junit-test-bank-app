@@ -595,3 +595,31 @@ SET REFERENTIAL_INTEGRITY TRUE;
     }
 ```
 - configuration에 addExposedHeader("Authorization"); 해당 코드를 넣어줘야 브라우저가 javascript에서 Authorization header 값을 사용할 수 있도록 노출시켜준다.
+
+## 입출금내역 동적 쿼리 작성
+1. TransactionRepositoryImpl.java class를 만든다.
+2. Dao interface를 생성해서 TransactionRepositoryImpl과 TransactionRepository가 상속받는다. 아래와 같은 포맷으로 생성해야 한다.
+```java
+interface Dao {
+    List<Transaction> finidTransactionList(@Param("accountId") Long accountId, @Param("gubun") String gubun,
+                                           @Param("page") Integer page); // parameter가 여러개면 @Param을 붙여줘야한다.
+}
+
+@RequiredArgsConstructor
+public class TransactionRepositoryImpl implements Dao {
+    private final EntityManager em;
+
+    // JPQL이 무엇인지
+    // join fetch
+    // outer 조인을 해야 하는지
+    @Override
+    public List<Transaction> finidTransactionList(Long accountId, String gubun, Integer page) {
+        // ... 구현
+    }
+
+
+public interface TransactionRepository extends JpaRepository<Transaction, Long>, Dao {
+
+}
+```
+3. TypedQuery로 쿼리를 생성한다. (Dao의 추상메서드 구현)
