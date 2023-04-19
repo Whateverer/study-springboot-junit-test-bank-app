@@ -163,7 +163,7 @@ public class AccountService {
         private Long amount;
         @NotEmpty
         @Pattern(regexp = "WITHDRAW")
-        private Long gubun;
+        private String gubun;
     }
 
 }
