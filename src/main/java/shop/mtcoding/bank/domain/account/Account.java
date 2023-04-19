@@ -20,13 +20,13 @@ import java.time.LocalDateTime;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(unique = true, nullable = false, length = 4)
-    private long number; // 계좌번호
+    private Long number; // 계좌번호
     @Column(nullable = false, length = 4)
-    private long password; // 계좌비번
+    private Long password; // 계좌비번
     @Column(nullable = false)
-    private long balance; // 잔액 (기본값:1000원)
+    private Long balance; // 잔액 (기본값:1000원)
 
     // 항상 ORM에서 fk의 주인은 Many Entity 쪽이다.
     @ManyToOne(fetch = FetchType.LAZY) // account.getUser().아무필드호출() == Lazy 발동
@@ -63,7 +63,7 @@ public class Account {
     }
 
     public void checkSamePassword(Long password) {
-        if(this.password != password) {
+        if(this.password.longValue() != password.longValue()) {
             throw new CustomApiException("계좌 비밀번호 검증에 실패했습니다.");
         }
     }
