@@ -213,7 +213,9 @@ class AccountServiceTest extends DummyObject {
         // then
         assertThat(ssarAccount.getBalance()).isEqualTo(900L);
     }
-    
+
+    // 완벽한 테스트는 존재할 수 없습니다.
+    // 꼼꼼하게 값을 테스트해봐야 한다.
     // 계좌이체_테스트 (서비스)
     @Test
     void 계좌이체_test() {
