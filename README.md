@@ -623,3 +623,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>,
 }
 ```
 3. TypedQuery로 쿼리를 생성한다. (Dao의 추상메서드 구현)
+
+## outer join 하는 이유
+- 모든 입출금 내역을 조회하기 위해 (입금내역에서의 null값 or 출금내역에서의 null값도 가져와야 전체 조회 가능)
