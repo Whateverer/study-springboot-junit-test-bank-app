@@ -15,6 +15,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Table;
 import java.util.List;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
@@ -37,15 +38,16 @@ public class TransactionRepositoryImplTest extends DummyObject {
     void setUp() {
         autoincrementReset();
         dataSetting();
+        em.clear(); // 레포테스트에서 필수
     }
 
     @Test
     public void findTransactionList_all_test() {
         // given
-        Long accountId = 2L;
+        Long accountId = 1L;
 
         // when
-        List<Transaction> transactionListPS = transactionRepository.findTransactionList(accountId, "WITHDRAW", 0);
+        List<Transaction> transactionListPS = transactionRepository.findTransactionList(accountId, "ALL", 0);
         transactionListPS.forEach((t) -> {
             System.out.println("테스트 : id " + t.getId());
             System.out.println("테스트 : amount " + t.getAmount());
@@ -53,10 +55,13 @@ public class TransactionRepositoryImplTest extends DummyObject {
             System.out.println("테스트 : Receiver " + t.getReceiver());
             System.out.println("테스트 : WithdrawAccount잔액 " + t.getWithdrawAccountBalance());
             System.out.println("테스트 : DepositAccount잔액 " + t.getDepositAccountBalance());
+            System.out.println("테스트 : 잔액 : " + t.getWithdrawAccount().getBalance());
+//            System.out.println("테스트 : fullname " + t.getWithdrawAccount().getUser().getFullname());
             System.out.println("테스트 : =================================");
         });
 
         // then
+        assertThat(transactionListPS.get(3).getDepositAccountBalance()).isEqualTo(800L);
     }
 
     @Test

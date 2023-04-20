@@ -626,3 +626,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long>,
 
 ## outer join 하는 이유
 - 모든 입출금 내역을 조회하기 위해 (입금내역에서의 null값 or 출금내역에서의 null값도 가져와야 전체 조회 가능)
+
+## fetch join 테스트
+- fetch join : JPQL에서 성능 최적화를 위해 제공하는 기능으로, 조회의 주체가 되는 Entity 이외에 Fetch Join이 걸린 연관된 Entity도 함께 Select하여 모두 영속화한다. 
+- fetch join이 걸린 Entity 모두 영속화 하기 때문에 FetchType이 Lazy인 Entity를 참조하더라도 이미 영속성 컨텍스트에 들어있기 때문에 따로 쿼리가 실행되지 않은 채로 N+1문제가 해결된다.
