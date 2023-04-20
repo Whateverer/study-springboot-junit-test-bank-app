@@ -8,7 +8,7 @@ import javax.persistence.TypedQuery;
 import java.util.List;
 
 interface Dao {
-    List<Transaction> finidTransactionList(@Param("accountId") Long accountId, @Param("gubun") String gubun,
+    List<Transaction> findTransactionList(@Param("accountId") Long accountId, @Param("gubun") String gubun,
                                            @Param("page") Integer page); // parameter가 여러개면 @Param을 붙여줘야한다.
 }
 
@@ -21,7 +21,7 @@ public class TransactionRepositoryImpl implements Dao {
     // join fetch
     // outer 조인을 해야 하는지
     @Override
-    public List<Transaction> finidTransactionList(Long accountId, String gubun, Integer page) {
+    public List<Transaction> findTransactionList(Long accountId, String gubun, Integer page) {
         // 동적쿼리 (gubun 값을 가지고 동적쿼리 = DEPOSIT, WITHDRAW, ALL)
         // JPQL
         String sql = "";
