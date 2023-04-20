@@ -40,6 +40,26 @@ public class TransactionRepositoryImplTest extends DummyObject {
     }
 
     @Test
+    public void findTransactionList_all_test() {
+        // given
+        Long accountId = 1L;
+
+        // when
+        List<Transaction> transactionListPS = transactionRepository.findTransactionList(accountId, "ALL", 0);
+        transactionListPS.forEach((t) -> {
+            System.out.println("테스트 : id " + t.getId());
+            System.out.println("테스트 : amount " + t.getAmount());
+            System.out.println("테스트 : Sender " + t.getSender());
+            System.out.println("테스트 : Receiver " + t.getReceiver());
+            System.out.println("테스트 : WithdrawAccount잔액 " + t.getWithdrawAccountBalance());
+            System.out.println("테스트 : DepositAccount잔액 " + t.getDepositAccountBalance());
+            System.out.println("테스트 : =================================");
+        });
+
+        // then
+    }
+
+    @Test
     public void dataJpa_test1() {
         List<Transaction> transactionList = transactionRepository.findAll();
         transactionList.forEach((transaction) -> {

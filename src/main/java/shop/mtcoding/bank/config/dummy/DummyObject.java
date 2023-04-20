@@ -14,7 +14,8 @@ public class DummyObject {
 
     protected Transaction newWithdrawTransaction(Account account, AccountRepository accountRepository) {
         account.withdraw(100L); // 1000원이 있었다면 900원이 됨
-        // 더티체킹이 안되기 때문에
+        // Repository Test에서는 더티체킹 됨
+        // Controller Test에서는 더티체킹 안됨
         if(accountRepository != null) {
             accountRepository.save(account);
         }
